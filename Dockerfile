@@ -3,9 +3,6 @@ MAINTAINER enrico.simonetti@gmail.com
 
 RUN adduser sugar --disabled-password --disabled-login --gecos ""
 
-ENV APACHE_RUN_USER=sugar
-ENV APACHE_RUN_GROUP=sugar
-
 RUN apt-get update \
     && apt-get install -y \
     graphviz \
