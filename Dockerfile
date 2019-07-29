@@ -1,7 +1,6 @@
 FROM php:7.1-apache
-MAINTAINER enrico.simonetti@gmail.com
 
-RUN adduser sugar --disabled-password --disabled-login --gecos ""
+RUN adduser $APACHE_RUN_USER --disabled-password --disabled-login --gecos ""
 
 RUN apt-get update \
     && apt-get install -y \
@@ -37,7 +36,7 @@ RUN echo 'date.timezone = GMT' >> /usr/local/etc/php/conf.d/docker.ini \
     && echo 'session.cookie_httponly = 1' >> /usr/local/etc/php/conf.d/docker.ini \
     && echo 'session.use_trans_sid = 0' >> /usr/local/etc/php/conf.d/docker.ini \
     && echo 'session.save_handler = redis' >> /usr/local/etc/php/conf.d/docker.ini \
-    && echo 'session.save_path = "tcp://sugar-redis:6379"' >> /usr/local/etc/php/conf.d/docker.ini
+    && echo 'session.save_path = "$REDIS_CONNECTION"' >> /usr/local/etc/php/conf.d/docker.ini
 
 COPY config/apache2/mods-available/deflate.conf /etc/apache2/mods-available/deflate.conf
 COPY config/apache2/sites-available/sugar.conf /etc/apache2/sites-available/sugar.conf
