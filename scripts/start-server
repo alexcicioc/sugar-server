@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+adduser "$APACHE_RUN_USER" --disabled-password --disabled-login --gecos "" || true
+echo "session.save_path = $REDIS_CONNECTION" >> /usr/local/etc/php/conf.d/docker.ini
+
+exec apache2-foreground "$@"
