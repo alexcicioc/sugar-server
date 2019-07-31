@@ -10,12 +10,10 @@ RUN apt-get update \
     libc-client-dev \
     libkrb5-dev \
     libldap2-dev \
-    git \
     --no-install-recommends
 
-RUN apt-get clean \
-    && apt-get -y autoremove \
-    && rm -rf /var/lib/apt/lists/*
+ADD ./config/apache2 /etc/apache2
+ADD ./scripts/start-server /usr/local/bin
 
 RUN echo 'date.timezone = GMT' >> /usr/local/etc/php/conf.d/docker.ini \
     && echo 'error_reporting = E_ALL \& ~E_NOTICE \& ~E_STRICT \& ~E_DEPRECATED' >> /usr/local/etc/php/conf.d/docker.ini \
@@ -34,9 +32,6 @@ RUN echo 'date.timezone = GMT' >> /usr/local/etc/php/conf.d/docker.ini \
     && echo 'session.cookie_httponly = 1' >> /usr/local/etc/php/conf.d/docker.ini \
     && echo 'session.use_trans_sid = 0' >> /usr/local/etc/php/conf.d/docker.ini \
     && echo 'session.save_handler = redis' >> /usr/local/etc/php/conf.d/docker.ini
-
-COPY config/apache2/mods-available/deflate.conf /etc/apache2/mods-available/deflate.conf
-COPY config/apache2/sites-available/sugar.conf /etc/apache2/sites-available/sugar.conf
 
 RUN set -ex \
     && . "/etc/apache2/envvars" \
@@ -60,7 +55,5 @@ RUN docker-php-ext-install mysqli \
     && pecl install xdebug \
     && pecl install redis \
     && docker-php-ext-enable redis
-
-ADD ./scripts/start-server /usr/local/bin
 
 CMD ["start-server"]
